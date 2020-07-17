@@ -1,3 +1,5 @@
+@import 'styles/mfate-sheet.css';
+
 @font-face {
   font-family: "Montserrat";
   src: url("fonts/Montserrat-Regular.otf");
@@ -44,6 +46,7 @@
   font-family: "Fate Core";
   src: url("fonts/Fate Core Font.ttf");
 }
+
 .fate.window-app .window-content h1,
 .fate.window-app .window-content h2,
 .fate.window-app .window-content h3 {

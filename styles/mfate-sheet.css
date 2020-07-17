@@ -1,0 +1,233 @@
+.sheet .window-content {
+    padding: 0;
+}
+
+.mfate-sheet .sheet-body {
+    flex: 1;
+    display: flex;
+}
+
+.mfate-sheet .tab[data-tab].active {
+    display: grid;
+}
+
+.mfate-sheet {
+    height: 100%;
+    min-width: 720px;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.mfate-sheet__header {
+    display: flex;
+    padding: .5em;
+    background: lightgrey;
+}
+
+.mfate-sheet__identity-panel {
+    display: flex;
+    flex: 2;
+}
+
+.mfate-sheet__identity-avatar {
+    width: 100px;
+    border: 1px solid gray;
+}
+
+.mfate-sheet__identity-name {
+    min-width: 190px;
+    border: 1px solid gray;
+    font-size: xx-large;
+    border: 0;
+    resize: none;
+    font-family: Montserrat;
+    font-weight: bold;
+    color: black;
+    text-shadow: 2px 2px 5px darkslategrey;
+    height: auto;
+    max-height: 88px;
+    background: none;
+}
+
+.mfate-sheet__meta {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.mfate-sheet__meta-column {
+    display: table;
+    flex: 50%;
+    box-sizing: border-box;
+}
+
+.mfate-sheet__meta-item {
+    display: table-row;
+}
+
+.mfate-sheet__meta-label,
+.mfate-sheet__meta-value {
+    display: table-cell;
+    padding: .3em .5em;
+}
+
+.mfate-sheet__meta-label {
+    padding-left: .5em;
+    min-width: 100px;
+    max-width: 170px;
+}
+
+.mfate-sheet__meta-column+.mfate-sheet__meta-column .mfate-sheet__meta-label {
+    min-width: 120px;
+    max-width: 170px;
+}
+
+.mfate-sheet__meta-value {
+    width: 75px;
+    border: none;
+}
+
+.mfate-sheet__meta-value[disabled] {
+    opacity: .5;
+}
+
+.mfate-sheet__tabs {
+    flex: 1;
+}
+
+
+/* Tabs navigation */
+
+.mfate-sheet__tabs {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.mfate-sheet__tabs-nav {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mfate-sheet__tabs-nav-item {}
+
+.mfate-sheet__tabs-nav-link {
+    border: 1px solid gray;
+}
+
+.mfate-sheet__tabs-nav-icon {
+    font-size: x-large;
+    padding-right: 50px;
+}
+
+
+/* Tabs */
+
+.mfate-sheet__tab {
+    flex: 1;
+}
+
+.mfate-sheet__tab--main {
+    flex: 1;
+    display: grid;
+    grid-template-areas: "skills aspects" "tracks stunts";
+    grid-template-rows: 50%;
+    grid-template-columns: 1fr 1fr;
+}
+
+.mfate-sheet__tab--secondary {
+    display: none;
+}
+
+
+/* Panel */
+
+.mfate-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.mfate-panel__panel {
+    border: 1px solid gray;
+    display: flex;
+}
+
+.mfate-panel__header {
+    display: flex;
+    align-items: baseline;
+    padding: 0 .5em;
+}
+
+.mfate-panel__body {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.mfate-panel__header-label {
+    flex: 1;
+    font-size: 14pt;
+    font-family: Montserrat;
+    font-weight: bold;
+}
+
+.mfate-panel__header-button {
+    background: none;
+    border: none;
+    flex: 0;
+}
+
+
+/* Skills list */
+
+.mfate-skills-list {
+    overflow-y: hidden;
+    overflow-x: auto;
+    display: table;
+    width: 100%;
+    border: .5em solid transparent;
+    padding: 0;
+}
+
+.mfate-skills-list__item {
+    display: table-row;
+}
+
+.mfate-skills-list__number,
+.mfate-skills-list__adjective,
+.mfate-skills-list__skill-name {
+    display: table-cell;
+    border-bottom: 1px solid gray;
+    padding: .3em .5em;
+}
+
+.mfate-skills-list__number {}
+
+.mfate-skills-list__adjective {}
+
+.mfate-skills-list__skill-name {}
+
+
+/* Aspect list */
+
+.mfate-aspects-list {
+    overflow-y: hidden;
+    overflow-x: auto;
+    padding: .5em;
+}
+
+.mfate-aspects-list__item {
+    list-style: none;
+    border-bottom: 1px solid gray;
+}
+
+.mfate-aspects-list__label {
+    font-family: Montserrat;
+    font-weight: bold;
+}
+
+.mfate-aspects-list__description {}
