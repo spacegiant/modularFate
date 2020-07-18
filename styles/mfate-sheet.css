@@ -13,13 +13,17 @@
 }
 
 .mfate-sheet {
-    height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: auto;
+    max-height: 100%;
     min-width: 720px;
     width: 100%;
     overflow-x: hidden;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    overflow-y: hidden;
+    background: white no-repeat url("../../../systems/ModularFate/assets/pbf.svg") bottom right;
+    background-size: 200px;
 }
 
 .mfate-sheet__header {
@@ -106,7 +110,6 @@
 .mfate-sheet__tabs {
     display: flex;
     flex-direction: column;
-    position: relative;
 }
 
 .mfate-sheet__tabs-nav {
@@ -150,7 +153,9 @@
     flex: 1;
     display: grid;
     grid-template-areas: "skills aspects" "tracks stunts";
-    grid-template-rows: minmax(50%, 520px);
+    /* grid-template-rows: minmax(50%, 545px);
+    grid-template-columns: 1fr 1fr; */
+    grid-template-rows: minmax(50%, 545px) minmax(0, 1fr);
     grid-template-columns: 1fr 1fr;
 }
 
@@ -177,10 +182,10 @@
     padding: 0 .5em;
 }
 
-.mfate-panel__header::before {
+.mfate-panel__header::after {
     content: "";
     display: block;
-    background: black;
+    background: #185CAB;
     width: 100%;
     height: 3px;
 }
@@ -196,7 +201,7 @@
     font-size: 14pt;
     font-family: Montserrat;
     font-weight: bold;
-    margin: 0 .5em 0 .5em;
+    margin: 0 .5em 0 0;
 }
 
 .mfate-panel__header-button {
@@ -227,13 +232,17 @@
 .mfate-skills-list__adjective,
 .mfate-skills-list__skill-name {
     display: table-cell;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid lightsteelblue;
     padding: .3em .5em;
 }
 
-.mfate-skills-list__number {}
+.mfate-skills-list__number {
+    width: 10px;
+}
 
-.mfate-skills-list__adjective {}
+.mfate-skills-list__adjective {
+    width: 10px;
+}
 
 .mfate-skills-list__skill-name {
     cursor: pointer;
@@ -263,4 +272,22 @@
     width: 100%;
     overflow: hidden;
     border: none;
+}
+
+
+/* Tracks list */
+
+.mfate-tracks-block {}
+
+.mfate-tracks-list {
+    display: table;
+}
+
+.mfate-tracks-list__item {
+    display: table-row;
+    list-style: none;
+}
+
+.mfate-tracks-list__item>* {
+    display: table-cell;
 }
