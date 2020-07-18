@@ -104,30 +104,12 @@
                                 <li class="mfate-skills-list__item">
                                     <div class="mfate-skills-list__number">{{this.rank}}</div>
                                     <div class="mfate-skills-list__adjective">({{lookup ../ladder this.rank}})</div>
-                                    <div class="mfate-skills-list__skill-name">
+                                    <div class="mfate-skills-list__skill-name" name="skill" id="{{this.name}}">
                                         {{this.name}}
                                         <i id="{{this.name}}" style="float:right" icon class="fas fa-dice"></i>
                                     </div>
                                 </li>
                                 {{/each}} {{/if}}
-
-
-
-                                <li class="mfate-skills-list__item">
-                                    <div class="mfate-skills-list__number">0</div>
-                                    <div class="mfate-skills-list__adjective">Great</div>
-                                    <div class="mfate-skills-list__skill-name">Athletics</div>
-                                </li>
-                                <li class="mfate-skills-list__item">
-                                    <div class="mfate-skills-list__number">0</div>
-                                    <div class="mfate-skills-list__adjective">Great</div>
-                                    <div class="mfate-skills-list__skill-name">Athletics</div>
-                                </li>
-                                <li class="mfate-skills-list__item">
-                                    <div class="mfate-skills-list__number">0</div>
-                                    <div class="mfate-skills-list__adjective">Great</div>
-                                    <div class="mfate-skills-list__skill-name">Athletics</div>
-                                </li>
                             </ul>
                         </div>
                     </div>
@@ -140,63 +122,65 @@
                         </div>
 
                         <ul class="mfate-aspects-list">
-                            <li class="mfate-aspects-list__item">
-                                <div class="mfate-aspects-list__label">Hight concept</div>
-                                <div class="mfate-aspects-list__description">Description</div>
-                            </li>
-                            <li class="mfate-aspects-list__item">
-                                <div class="mfate-aspects-list__label">Hight concept</div>
-                                <div class="mfate-aspects-list__description">Description</div>
-                            </li>
-                            <li class="mfate-aspects-list__item">
-                                <div class="mfate-aspects-list__label">Hight concept</div>
-                                <div class="mfate-aspects-list__description">Description</div>
-                            </li>
+
+                            {{#each data.aspects}}
+                            <div class="row">
+                                <!-- <div name="aspect" style="float:left, width 25%; margin:auto; padding:1px; font-family:Montserrat; font-weight:bold" title="{{this.description}}">
+                                    <div id="{{this.name}}" name="{{this.name}}">{{this.name}}</div>
+                                    <input class="cs_box" type="text" {{this.name}} " name="data.aspects.{{this.name}}.value " value="{{{this.value}}} "></input>
+                                        </div>
+                                </div> -->
+
+                                <li name="aspect " title="{{this.description}} " class="mfate-aspects-list__item ">
+                                    <div id="{{this.name}} " name="{{this.name}} " class="mfate-aspects-list__label ">Hight concept</div>
+                                    <input class="mfate-aspects-list__description " type="text " id="{{this.name}}" name="data.aspects.{{this.name}}.value" value="{{{this.value}}}"></input>
+                                </li>
+                                {{/each}}
                         </ul>
-                    </div>
-                    <div class="mfate-panel">
-                        <div class="mfate-panel__header">
-                            <div class="mfate-panel__header-label">Tracks</div>
-                            <div class="mfate-panel__header-button">Settings</div>
-                            <div class="mfate-panel__header-button">Sort</div>
+                        </div>
+                        <div class="mfate-panel">
+                            <div class="mfate-panel__header">
+                                <div class="mfate-panel__header-label">Tracks</div>
+                                <div class="mfate-panel__header-button">Settings</div>
+                                <div class="mfate-panel__header-button">Sort</div>
+                            </div>
+
+                        </div>
+                        <div class="mfate-panel">
+                            <div class="mfate-panel__header">
+                                <div class="mfate-panel__header-label">Stunts</div>
+                                <div class="mfate-panel__header-button">Settings</div>
+                                <div class="mfate-panel__header-button">Sort</div>
+                            </div>
                         </div>
 
+
                     </div>
-                    <div class="mfate-panel">
-                        <div class="mfate-panel__header">
-                            <div class="mfate-panel__header-label">Stunts</div>
-                            <div class="mfate-panel__header-button">Settings</div>
-                            <div class="mfate-panel__header-button">Sort</div>
+                    <div class="tab biography mfate-sheet__tab mfate-sheet__tab--secondary" id="biography_body" data-tab="biography">
+                        <div class="mfate-sheet-description">
+                            <div class="mfate-sheet-description__header">
+                                <div class="mfate-sheet-description__header-label">Description header</div>
+                            </div>
+                            <div class="mfate-sheet-description__content">Content</div>
+                        </div>
+                        <div class="mfate-sheet-biography">
+                            <div class="mfate-sheet-biography__header">
+                                <div class="mfate-sheet-biography__header-label">Description header</div>
+                            </div>
+                            <div class="mfate-sheet-biography__content">Content</div>
+                        </div>
+                        <div class="mfate-sheet-extras">
+                            <div class="mfate-sheet-extras__header">
+                                <div class="mfate-sheet-extras__header-label">Description header</div>
+                            </div>
+                            <div class="mfate-sheet-extras__content">Content</div>
                         </div>
                     </div>
-
-
                 </div>
-                <div class="tab biography mfate-sheet__tab mfate-sheet__tab--secondary" id="biography_body" data-tab="biography">
-                    <div class="mfate-sheet-description">
-                        <div class="mfate-sheet-description__header">
-                            <div class="mfate-sheet-description__header-label">Description header</div>
-                        </div>
-                        <div class="mfate-sheet-description__content">Content</div>
-                    </div>
-                    <div class="mfate-sheet-biography">
-                        <div class="mfate-sheet-biography__header">
-                            <div class="mfate-sheet-biography__header-label">Description header</div>
-                        </div>
-                        <div class="mfate-sheet-biography__content">Content</div>
-                    </div>
-                    <div class="mfate-sheet-extras">
-                        <div class="mfate-sheet-extras__header">
-                            <div class="mfate-sheet-extras__header-label">Description header</div>
-                        </div>
-                        <div class="mfate-sheet-extras__content">Content</div>
-                    </div>
-                </div>
+            </section>
+
+
         </div>
-        </section>
-
-
-    </div>
 
     </div>
     </div>
@@ -390,7 +374,7 @@
 <div><!--Begin Extras block-->
     <div name = "Extras header " style="width:300px; padding-top:10px; font-family:Montserrat; font-size:14pt "><b>Extras:</b><div title="Add a new Extra " style="font-size:medium; padding-left:10px; padding-right:10px; " name="add_player_extra
                                 " i icon class="fas fa-plus "></div></div>
-    <div name = "extras_body " style="overflow-y:auto; width:800px; height:auto; "">
+    <div name = "extras_body " style="overflow-y:auto; width:800px; height:auto; ">
                             <table style="background:white; color:black; border:none">
                                 {{#each items}}
                                 <tr>
