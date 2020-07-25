@@ -1,11 +1,11 @@
 import { ExtraSheet } from "./ExtraSheet.js";
 
 Handlebars.registerHelper("add1", function(value) {
-    return value+1;
+    return value + 1;
 });
 
 Handlebars.registerHelper("hasBoxes", function(track) {
-    if(track.box_values==undefined || track.box_values.length==0){
+    if (track.box_values == undefined || track.box_values.length == 0) {
         return false;
     } else {
         return true;
@@ -18,15 +18,13 @@ export class ModularFateCharacter extends ActorSheet {
         const options = super.defaultOptions;
         options.width = "870"
         options.height = "950"
-        options.scrollY = ["#skills_body", "#aspects_body","#tracks_body", "#stunts_body", "#biography_body"]
+        options.scrollY = ["#skills_body", "#aspects_body", "#tracks_body", "#stunts_body", "#biography_body"]
         mergeObject(options, {
-            tabs: [
-                {
-                    navSelector: '.foo',
-                    contentSelector: '.sheet-body',
-                    initial: 'sheet',
-                },
-            ],
+            tabs: [{
+                navSelector: '.foo',
+                contentSelector: '.sheet-body',
+                initial: 'sheet',
+            }, ],
         });
         return options;
     }
@@ -36,10 +34,10 @@ export class ModularFateCharacter extends ActorSheet {
     }
 
     get template() {
-        return 'systems/ModularFate/templates/ModularFateSheet.html';
+        return 'systems/ModularFate/templates/ModularFateSheet2.html';
     }
 
-    constructor (...args){
+    constructor(...args) {
         super(...args);
         this.first_run = true;
         this.editing = false;
@@ -47,14 +45,14 @@ export class ModularFateCharacter extends ActorSheet {
 
     //Here are the action listeners
     activateListeners(html) {
-        if (this.actor.owner){
+        if (this.actor.owner) {
             const skillsButton = html.find("div[name='edit_player_skills']");;
             skillsButton.on("click", event => this._onSkillsButton(event, html));
             const skill_name = html.find("div[name='skill']");
             skill_name.on("click", event => this._onSkill_name(event, html));
             const sort = html.find("div[name='sort_player_skills'")
             sort.on("click", event => this._onSortButton(event, html));
-            
+
             const aspectButton = html.find("div[name='edit_player_aspects']");
             aspectButton.on("click", event => this._onAspectClick(event, html));
 
@@ -66,15 +64,15 @@ export class ModularFateCharacter extends ActorSheet {
             track_name.on("click", event => this._on_track_name_click(event, html));
 
             const delete_stunt = html.find("button[name='delete_stunt']");
-            delete_stunt.on("click", event => this._onDelete(event,html));
+            delete_stunt.on("click", event => this._onDelete(event, html));
             const edit_stunt = html.find("button[name='edit_stunt']")
-            edit_stunt.on("click", event => this._onEdit (event,html));
+            edit_stunt.on("click", event => this._onEdit(event, html));
 
             const tracks_button = html.find("div[name='edit_player_tracks']"); // Tracks, tracks, check
             const stunts_button = html.find("div[name='edit_player_stunts']");
 
             const extras_button = html.find("div[name='add_player_extra']");
-            const extras_edit = html.find ("button[name='edit_extra']");
+            const extras_edit = html.find("button[name='edit_extra']");
             const extras_delete = html.find("button[name='delete_extra']");
 
             extras_button.on("click", event => this._on_extras_click(event, html));
@@ -88,17 +86,17 @@ export class ModularFateCharacter extends ActorSheet {
             tracks_button.on("click", event => this._onTracks_click(event, html));
 
             const bio = html.find(`div[id='${this.object.id}_biography']`)
-            bio.on("input",event => this._onBioInput(event, html));
+            bio.on("input", event => this._onBioInput(event, html));
             const desc = html.find(`div[id='${this.object.id}_description']`)
-            desc.on("input",event => this._onDescInput(event, html));
+            desc.on("input", event => this._onDescInput(event, html));
 
             const stunt_roll = html.find("button[name='stunt_name']");
-            stunt_roll.on("click", event => this._on_stunt_roll_click(event,html));
+            stunt_roll.on("click", event => this._on_stunt_roll_click(event, html));
         }
         super.activateListeners(html);
     }
 
-    async _on_stunt_roll_click(event,html){
+    async _on_stunt_roll_click(event, html) {
         let items = event.target.id.split("_");
         let name = items[0];
         let skill = items[1];
@@ -116,52 +114,56 @@ export class ModularFateCharacter extends ActorSheet {
         });
     }
 
-    async _onBioInput(event, html){
+    async _onBioInput(event, html) {
         this.editing = true;
         let bio = event.target.innerHTML;
-        await this.object.update({"data.details.biography.value":bio})
+        await this.object.update({ "data.details.biography.value": bio })
         this.editing = false;
     }
 
-    async _onDescInput(event, html){
+    async _onDescInput(event, html) {
         this.editing = true;
         let desc = event.target.innerHTML;
-        await this.object.update({"data.details.description.value":desc})
+        await this.object.update({ "data.details.description.value": desc })
         this.editing = false;
     }
 
-    async render (...args){
+    async render(...args) {
 
-        if (this.editing == false){
+        if (this.editing == false) {
             super.render(...args);
         }
     }
 
-    async _on_extras_click(event, html){
+    async _on_extras_click(event, html) {
         const data = {
-            "name": "New Extra", 
+            "name": "New Extra",
             "type": "Extra"
         };
         const created = await this.actor.createEmbeddedEntity("OwnedItem", data);
     }
-    async _on_extras_edit_click(event, html){
+    async _on_extras_edit_click(event, html) {
         let items = this.object.items;
         let item = items.get(event.target.id);
         let e = new ExtraSheet(item);
         await e.render(true);
     }
-    async _on_extras_delete(event, html){
+    async _on_extras_delete(event, html) {
         await this.actor.deleteOwnedItem(event.target.id);
         //const deleted = await x.deleteEmbeddedEntity("OwnedItem", event.target.id);
     }
 
-    async _onDelete(event, html){
+    async _onDelete(event, html) {
         let name = event.target.id.split("_")[0];
-        await this.object.update({"data.stunts":{[`-=${name}`]:null}});
+        await this.object.update({
+            "data.stunts": {
+                [`-=${name}`]: null
+            }
+        });
     }
 
-    async _onEdit (event, html){
-        let name=event.target.id.split("_")[0];
+    async _onEdit(event, html) {
+        let name = event.target.id.split("_")[0];
 
         let editor = new EditPlayerStunts(this.actor, this.object.data.data.stunts[name]);
         editor.render(true);
@@ -173,7 +175,7 @@ export class ModularFateCharacter extends ActorSheet {
         let tracks = duplicate(this.object.data.data.tracks);
         let track = tracks[event.target.innerHTML]
         let notes = track.notes;
-        let text = await ModularFateConstants.updateText("Track Notes for "+track.name +" on "+this.actor.name, notes);
+        let text = await ModularFateConstants.updateText("Track Notes for " + track.name + " on " + this.actor.name, notes);
         await this.object.update({
             [`data.tracks.${event.target.innerHTML}.notes`]: text
         })
@@ -203,15 +205,15 @@ export class ModularFateCharacter extends ActorSheet {
     async _onStunts_click(event, html) {
         //Launch the EditPlayerStunts FormApplication.
         let stunt = {
-            "name":"New Stunt",
-            "linked_skill":"None",
-            "description":"",
-            "refresh_cost":1,
-            "overcome":false,
-            "caa":false,
-            "attack":false,
-            "defend":false,
-            "bonus":0
+            "name": "New Stunt",
+            "linked_skill": "None",
+            "description": "",
+            "refresh_cost": 1,
+            "overcome": false,
+            "caa": false,
+            "attack": false,
+            "defend": false,
+            "bonus": 0
         }
         let editor = new EditPlayerStunts(this.actor, stunt);
         editor.render(true);
@@ -224,7 +226,7 @@ export class ModularFateCharacter extends ActorSheet {
         editor.setSheet(this);
     }
 
-       async _onAspectClick(event, html) {
+    async _onAspectClick(event, html) {
         if (game.user.isGM) {
             let av = new EditPlayerAspects(this.actor);
             av.render(true);
@@ -246,11 +248,10 @@ export class ModularFateCharacter extends ActorSheet {
 
     async _onSkill_name(event, html) {
 
-        if (event.shiftKey){
-           let mrd = new ModifiedRollDialog(this.actor, event.target.id);
+        if (event.shiftKey) {
+            let mrd = new ModifiedRollDialog(this.actor, event.target.id);
             mrd.render(true);
-        }
-        else {
+        } else {
             let r = new Roll(`4dF + ${this.object.data.data.skills[event.target.id].rank}`);
             let roll = r.roll();
 
@@ -263,13 +264,13 @@ export class ModularFateCharacter extends ActorSheet {
             });
         }
     }
-    
+
     async initialise() {
 
         // Logic to set up Refresh and Current
 
         let refresh = game.settings.get("ModularFate", "refreshTotal");
-        
+
         let working_data = duplicate(this.object.data);
 
         if (working_data.data.details.fatePoints.refresh == "") {
@@ -279,48 +280,47 @@ export class ModularFateCharacter extends ActorSheet {
         }
 
         // Replace any plusTwo values on this character's stunts with a +2 bonus.
-        
-        for (let s in working_data.data.stunts){
+
+        for (let s in working_data.data.stunts) {
             let stunt = working_data.data.stunts[s];
-            if (stunt.plusTwo == true){
-                stunt.bonus=2;
-                stunt.plusTwo="deprecated"
+            if (stunt.plusTwo == true) {
+                stunt.bonus = 2;
+                stunt.plusTwo = "deprecated"
             } else {
-                stunt.plusTwo="deprecated"
-                if (stunt.bonus==undefined){
-                    stunt.bonus=0;    
+                stunt.plusTwo = "deprecated"
+                if (stunt.bonus == undefined) {
+                    stunt.bonus = 0;
                 }
             }
         }
-        
-        let p_skills=working_data.data.skills;
-        
+
+        let p_skills = working_data.data.skills;
+
         //Check to see what skills the character has compared to the global skill list
-            var skill_list = game.settings.get("ModularFate","skills");
-            // This is the number of skills the character has currently.
-            //We only need to add any skills if this is currently 0,
-            
-            if (this.newCharacter){
-                    let skills_to_add = [];
+        var skill_list = game.settings.get("ModularFate", "skills");
+        // This is the number of skills the character has currently.
+        //We only need to add any skills if this is currently 0,
 
-                    for (let w in skill_list){
-                        let w_skill = skill_list[w];
-                        if (p_skills[w]!=undefined){
-                        } else {
-                            if(w_skill.pc){
-                                skills_to_add.push(w_skill);
-                            }
-                        }
+        if (this.newCharacter) {
+            let skills_to_add = [];
+
+            for (let w in skill_list) {
+                let w_skill = skill_list[w];
+                if (p_skills[w] != undefined) {} else {
+                    if (w_skill.pc) {
+                        skills_to_add.push(w_skill);
                     }
-
-                    if (skills_to_add.length >0){
-                        //Add any skills from the global list that they don't have at rank 0.
-                        skills_to_add.forEach(skill => {
-                            skill.rank=0;
-                            p_skills[skill.name]=skill;
-                        })
                 }
             }
+
+            if (skills_to_add.length > 0) {
+                //Add any skills from the global list that they don't have at rank 0.
+                skills_to_add.forEach(skill => {
+                    skill.rank = 0;
+                    p_skills[skill.name] = skill;
+                })
+            }
+        }
 
         // Logic to set up aspects if this character doesn't already have them
         if (this.newCharacter) {
@@ -376,7 +376,7 @@ export class ModularFateCharacter extends ActorSheet {
             working_data.data.tracks = tracks_to_write;
         }
         let tracks = working_data.data.tracks;
-        
+
         let categories = game.settings.get("ModularFate", "track_categories");
         //GO through all the tracks, find the ones with boxes, check the number of boxes and linked skills and initialise as necessary.
         for (let t in tracks) {
@@ -398,19 +398,19 @@ export class ModularFateCharacter extends ActorSheet {
                     let l_enables = linked_skills[i].enables;
 
                     //Get the value of the player's skill
-                    if (working_data.data.skills[l_skill] == undefined){
+                    if (working_data.data.skills[l_skill] == undefined) {
 
-                    }else {
+                    } else {
                         let skill_rank = working_data.data.skills[l_skill].rank;
                         //If this is 'enables' and the skill is too low, disable.
                         if (l_enables && skill_rank < l_skill_rank) {
-                        track.enabled = false;
-                    }
+                            track.enabled = false;
+                        }
 
-                    //If this adds boxes and the skill is high enough, add boxes if not already present.
-                    //Telling if the boxes are already present is the hard part.
-                    //If boxes.length > boxes it means we have added boxes, but how many? I think we need to store a count and add
-                    //or subract them at the end of our run through the linked skills.
+                        //If this adds boxes and the skill is high enough, add boxes if not already present.
+                        //Telling if the boxes are already present is the hard part.
+                        //If boxes.length > boxes it means we have added boxes, but how many? I think we need to store a count and add
+                        //or subract them at the end of our run through the linked skills.
                         if (l_boxes > 0 && skill_rank >= l_skill_rank) {
                             box_mod += l_boxes;
                         }
@@ -447,7 +447,7 @@ export class ModularFateCharacter extends ActorSheet {
     }
 
     async getData() {
-        if (this.first_run && this.actor.owner){
+        if (this.first_run && this.actor.owner) {
             this.initialise();
             this.first_run = false;
         }
@@ -469,14 +469,14 @@ export class ModularFateCharacter extends ActorSheet {
         }
 
         this.object.items.entries.forEach(item => {
-                paidExtras += parseInt(item.data.data.refresh);
+            paidExtras += parseInt(item.data.data.refresh);
         })
 
         let stunts = this.object.data.data.stunts;
-        for (let s in stunts){
+        for (let s in stunts) {
             paidStunts += parseInt(stunts[s].refresh_cost);
         }
-        
+
         paidStunts -= this.freeStunts;
 
         this.refreshSpent = paidTracks + paidStunts + paidExtras;
@@ -517,7 +517,7 @@ export class ModularFateCharacter extends ActorSheet {
         sheetData.ordered_skills = ordered_skills;
         sheetData.sorted_by_rank = sorted_by_rank;
         sheetData.gameRefresh = game.settings.get("ModularFate", "refreshTotal");
-        sheetData.item=this.object.items;
+        sheetData.item = this.object.items;
 
         let skillTotal = 0;
         for (let s in ordered_skills) {
