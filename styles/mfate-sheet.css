@@ -2,18 +2,60 @@
     padding: 0;
 }
 
+.mfate2-sheet {
+    display: grid;
+    grid-template-areas: "header header" "content content";
+    grid-template-rows: auto 1fr
+}
+
+.mfate-sheet__header {
+    grid-area: header;
+}
+
+.mfate-sheet__tab--main {
+    display: grid;
+    grid-template-areas: "skills aspects" "tracks stunts";
+    grid-template-rows: minmax(50%, 545px) minmax(300px, 1fr);
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+}
+
+.mfate-panel--skills {
+    grid-area: skills;
+}
+
+.mfate-panel--aspects {
+    grid-area: aspects;
+}
+
+.mfate-panel--tracks {
+    grid-area: tracks;
+}
+
+.mfate-panel--stunts {
+    grid-area: stunts;
+}
+
 .mfate-sheet .sheet-body {
     flex: 1;
     display: flex;
     padding-top: .5em;
 }
 
-.mfate-sheet .tab[data-tab].active {
+.tab[data-tab].active {
     display: grid;
 }
 
-.mfate-sheet {
-    display: flex;
+.sheet-body {
+    grid-area: content;
+    overflow: hidden;
+}
+
+
+/* .mfate-sheet { */
+
+
+/* display: flex;
     flex: 1;
     flex-direction: column;
     height: auto;
@@ -23,8 +65,10 @@
     overflow-x: hidden;
     overflow-y: hidden;
     background: white no-repeat url("../../../systems/ModularFate/assets/pbf.svg") bottom right;
-    background-size: 200px;
-}
+    background-size: 200px; */
+
+
+/* } */
 
 .mfate-sheet__header {
     display: flex;
@@ -150,13 +194,13 @@
 }
 
 .mfate-sheet__tab--main {
-    flex: 1;
+    /* flex: 1;
     display: grid;
-    grid-template-areas: "skills aspects" "tracks stunts";
+    grid-template-areas: "skills aspects" "tracks stunts"; */
     /* grid-template-rows: minmax(50%, 545px);
     grid-template-columns: 1fr 1fr; */
-    grid-template-rows: minmax(50%, 545px) minmax(0, 1fr);
-    grid-template-columns: 1fr 1fr;
+    /* grid-template-rows: minmax(50%, 545px) minmax(0, 1fr);
+    grid-template-columns: 1fr 1fr; */
 }
 
 .mfate-sheet__tab--secondary {
@@ -179,7 +223,7 @@
 .mfate-panel__header {
     display: flex;
     align-items: baseline;
-    padding: 0 .5em;
+    padding: .5em .5em 0;
 }
 
 .mfate-panel__header::after {
@@ -277,10 +321,14 @@
 
 /* Tracks list */
 
-.mfate-tracks-block {}
+.mfate-tracks {
+    flex: 1;
+    overflow: auto;
+}
 
 .mfate-tracks-list {
     display: table;
+    padding: 0 0.5em;
 }
 
 .mfate-tracks-list__item {
