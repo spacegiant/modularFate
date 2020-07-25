@@ -16,7 +16,7 @@ export class ModularFateCharacter extends ActorSheet {
 
     static get defaultOptions() {
         const options = super.defaultOptions;
-        options.width = "860"
+        options.width = "870"
         options.height = "950"
         options.scrollY = ["#skills_body", "#aspects_body","#tracks_body", "#stunts_body", "#biography_body"]
         mergeObject(options, {
@@ -102,12 +102,7 @@ export class ModularFateCharacter extends ActorSheet {
         let items = event.target.id.split("_");
         let name = items[0];
         let skill = items[1];
-        let plusTwo = items[2];
-
-        let bonus = 0;
-        if (plusTwo=="true"){
-            bonus += 2;
-        }
+        let bonus = parseInt(items[2]);
 
         let r = new Roll(`4dF + ${this.object.data.data.skills[skill].rank}+${bonus}`);
         let roll = r.roll();
@@ -178,7 +173,7 @@ export class ModularFateCharacter extends ActorSheet {
         let tracks = duplicate(this.object.data.data.tracks);
         let track = tracks[event.target.innerHTML]
         let notes = track.notes;
-        let text = await ModularFateConstants.updateText("Track Notes", notes);
+        let text = await ModularFateConstants.updateText("Track Notes for "+track.name +" on "+this.actor.name, notes);
         await this.object.update({
             [`data.tracks.${event.target.innerHTML}.notes`]: text
         })
@@ -216,7 +211,7 @@ export class ModularFateCharacter extends ActorSheet {
             "caa":false,
             "attack":false,
             "defend":false,
-            "plusTwo":false
+            "bonus":0
         }
         let editor = new EditPlayerStunts(this.actor, stunt);
         editor.render(true);
@@ -250,21 +245,29 @@ export class ModularFateCharacter extends ActorSheet {
     }
 
     async _onSkill_name(event, html) {
-        let r = new Roll(`4dF + ${this.object.data.data.skills[event.target.id].rank}`);
-        let roll = r.roll();
 
-        let msg = ChatMessage.getSpeaker(this.object.actor)
-        msg.alias = this.object.name;
+        if (event.shiftKey){
+           let mrd = new ModifiedRollDialog(this.actor, event.target.id);
+            mrd.render(true);
+        }
+        else {
+            let r = new Roll(`4dF + ${this.object.data.data.skills[event.target.id].rank}`);
+            let roll = r.roll();
 
-        roll.toMessage({
-            flavor: `<h1>${event.target.id}</h1>Rolled by ${game.user.name}`,
-            speaker: msg
-        });
+            let msg = ChatMessage.getSpeaker(this.object.actor)
+            msg.alias = this.object.name;
+
+            roll.toMessage({
+                flavor: `<h1>${event.target.id}</h1>Rolled by ${game.user.name}`,
+                speaker: msg
+            });
+        }
     }
     
     async initialise() {
 
         // Logic to set up Refresh and Current
+
         let refresh = game.settings.get("ModularFate", "refreshTotal");
         
         let working_data = duplicate(this.object.data);
@@ -275,8 +278,52 @@ export class ModularFateCharacter extends ActorSheet {
             working_data.data.details.fatePoints.current = refresh;
         }
 
+        // Replace any plusTwo values on this character's stunts with a +2 bonus.
+        
+        for (let s in working_data.data.stunts){
+            let stunt = working_data.data.stunts[s];
+            if (stunt.plusTwo == true){
+                stunt.bonus=2;
+                stunt.plusTwo="deprecated"
+            } else {
+                stunt.plusTwo="deprecated"
+                if (stunt.bonus==undefined){
+                    stunt.bonus=0;    
+                }
+            }
+        }
+        
+        let p_skills=working_data.data.skills;
+        
+        //Check to see what skills the character has compared to the global skill list
+            var skill_list = game.settings.get("ModularFate","skills");
+            // This is the number of skills the character has currently.
+            //We only need to add any skills if this is currently 0,
+            
+            if (this.newCharacter){
+                    let skills_to_add = [];
+
+                    for (let w in skill_list){
+                        let w_skill = skill_list[w];
+                        if (p_skills[w]!=undefined){
+                        } else {
+                            if(w_skill.pc){
+                                skills_to_add.push(w_skill);
+                            }
+                        }
+                    }
+
+                    if (skills_to_add.length >0){
+                        //Add any skills from the global list that they don't have at rank 0.
+                        skills_to_add.forEach(skill => {
+                            skill.rank=0;
+                            p_skills[skill.name]=skill;
+                        })
+                }
+            }
+
         // Logic to set up aspects if this character doesn't already have them
-        if (Object.keys(working_data.data.aspects) == 0) {
+        if (this.newCharacter) {
             let aspects = game.settings.get("ModularFate", "aspects");
             let player_aspects = duplicate(aspects);
             for (let a in player_aspects) {
@@ -286,7 +333,7 @@ export class ModularFateCharacter extends ActorSheet {
             working_data.data.aspects = player_aspects;
         }
 
-        if (Object.keys(working_data.data.tracks).length == 0) {
+        if (this.newCharacter) {
             //Step one, get the list of universal tracks.
             let world_tracks = duplicate(game.settings.get("ModularFate", "tracks"));
             let tracks_to_write = working_data.data.tracks;
