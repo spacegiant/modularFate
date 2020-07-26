@@ -42,13 +42,13 @@
                 </div>
             </div>
             <nav class="mfate-sheet__tabs-nav foo">
-                <a class="mfate-sheet__tabs-nav-link item" data-tab="biography">
-                    <span class="sr-only">Biography and Extras</span>
-                    <b title="Biography and Extras" class="fas fa-portrait mfate-sheet__tabs-nav-icon"></b>
-                </a>
                 <a class="mfate-sheet__tabs-nav-link item active" data-tab="sheet">
                     <span class="sr-only">Character Sheet</span>
                     <b title="Character Sheet" class="fas fa-clipboard mfate-sheet__tabs-nav-icon"></b>
+                </a>
+                <a class="mfate-sheet__tabs-nav-link item" data-tab="biography">
+                    <span class="sr-only">Biography and Extras</span>
+                    <b title="Biography and Extras" class="fas fa-portrait mfate-sheet__tabs-nav-icon"></b>
                 </a>
             </nav>
         </div>
@@ -119,29 +119,48 @@
             </div>
             <div class="mfate-panel mfate-panel--tracks" name="tracks_stunts">
 
-                <div style="display:flex; flex-flow:row wrap; height: 100%;" name="tracks_stunts">
-                    <div name="tracks_block" style="height: 100%; display: flex; flex-direction: column;">
+                <div name="tracks_stunts" class="mfate-tracks">
+                    <div name="tracks_block" class="tracks-block">
                         <!--Begin the tracks block-->
-                        <div name="tracks_header" style="width:350px; padding-top:10px; font-size:14pt; font-family:Montserrat"><b>Tracks</b>
-                            <div title="Open the Track Editor" style="font-size:medium; padding-left:10px; padding-right:10px;" name="edit_player_tracks" i icon class="fas fa-cog"></div>
+                        <div class="mfate-panel__header" name="tracks_header">
+                            <b class="mfate-panel__header-label">Tracks</b>
+                            <div title="Open the Track Editor" style="font-size:medium;" name="edit_player_tracks" i icon class="fas fa-cog"></div>
                         </div>
-                        <div name="tracks_body" id="tracks_body" style="overflow-y:auto; width:400px; padding-top:10px; height:400px;scrollbar-width:thin">
-                            <table style="background-color:white; border:0px; padding:10px;">
+                        <div name="tracks_body" id="tracks_body" style="scrollbar-width:thin">
+                            <div class="mfate-tracks__list">
                                 {{#each tracks}}{{#if this.enabled}}
-                                <tr>
-                                    <td style="padding-bottom:10px; width:110px">
-                                        <div name="track_name" style="font-family:Montserrat" title="Click here to edit the track notes for {{this.name}}"><i style="font-style:normal; font-weight:bold; font-family: Montserrat">{{this.name}}</i></div>
-                                    </td>
-                                    <td style="padding-bottom:10px">
-                                        {{#each this.box_values}} {{#if this}}
-                                        <label class="box"><input type="checkbox" name = "box" id="{{../name}}_{{@index}}_false" style="opacity:0;width:25px; height:25px; float:left;" checked="checked"><span class = "checkmark"></span><i style="font-style:normal; position: absolute; left: 0; top: 0; transform: translate(-55%, -35%); font-weight: 900; font-size: 20px; color: #2f3542; text-shadow: 2px 2px 0px white;">{{#if (eq ../label "escalating")}}{{add1 @index}}{{else}}{{#if (eq ../label "none")}}{{else}}{{../label}}{{/if}}{{#if (eq ../harm_can_absorb 0)}}{{else}}{{../harm_can_absorb}}{{/if}}{{/if}}</i></label>{{else}}
-                                        <label class="box"><input type="checkbox" name="box" id="{{../name}}_{{@index}}_true" style="opacity:0; width:25px; height:25px; float:left;"><span class = "checkmark"></span><i style="font-style:normal; position: absolute; left: 0; top: 0; transform: translate(-55%, -35%); font-weight: 900; font-size: 20px; color: #2f3542; text-shadow: 2px 2px 0px #f1f2f6;">{{#if (eq ../label "escalating")}}{{add1 @index}}{{else}}{{#if (eq ../label "none")}}{{else}}{{../label}}{{/if}}{{#if (eq ../harm_can_absorb 0)}}{{else}}{{../harm_can_absorb}}{{/if}}{{/if}}</i></input></label>{{/if}}
-                                        {{/each}} {{#if this.aspect.when_marked}}{{#if (hasBoxes this)}}{{else}}<label style="font-weight:900; padding-left:2px">{{this.harm_can_absorb}}</label>{{/if}}<input type="text" class="aspect_box" name="data.tracks.{{this.name}}.aspect.name"
-                                            value="{{this.aspect.name}}"><i style="font-style:normal; position: absolute; left: 0; top: 0; transform: translate(-55%, -35%); font-weight: 900; font-size: 24px; color: #2f3542; text-shadow: 2px 2px 2px white;"></i></input>{{/if}}
-                                    </td>
-                                </tr>
+                                <div class="mfate-tracks__item">
+                                    <div class="mfate-tracks__item-label">
+                                        <div name="divack_name" style="font-family:Montserrat" title="Click here to edit the track notes for {{this.name}}">
+                                            <i style="font-style:normal; font-weight:bold; font-family: Montserrat">{{this.name}}</i>
+                                        </div>
+                                    </div>
+                                    <!-- CHECKBOXES-->
+                                    {{#each this.box_values}} {{#if this}}
+                                    <label class="box">
+                                        <input type="checkbox" name="box" id="{{../name}}_{{@index}}_false" style="opacity:0;width:25px; height:25px; float:left;" checked="checked">
+                                            <span class = "checkmark"></span>
+                                            <i style="font-style:normal; position: absolute; left: 0; top: 0; transform: translate(-55%, -35%); font-weight: 900; font-size: 20px; color: #2f3542; text-shadow: 2px 2px 0px white;">{{#if (eq ../label "escalating")}}{{add1 @index}}{{else}}{{#if (eq ../label "none")}}{{else}}{{../label}}{{/if}}{{#if (eq ../harm_can_absorb 0)}}{{else}}{{../harm_can_absorb}}{{/if}}{{/if}}</i>
+                                        </input>
+                                    </label> {{else}}
+                                    <label class="box">
+                                        <input type="checkbox" name="box" id="{{../name}}_{{@index}}_true" style="opacity:0; width:25px; height:25px; float:left;">
+                                            <span class = "checkmark"></span>
+                                            <i style="font-style:normal; position: absolute; left: 0; top: 0; transform: translate(-55%, -35%); font-weight: 900; font-size: 20px; color: #2f3542; text-shadow: 2px 2px 0px #f1f2f6;">{{#if (eq ../label "escalating")}}{{add1 @index}}{{else}}{{#if (eq ../label "none")}}{{else}}{{../label}}{{/if}}{{#if (eq ../harm_can_absorb 0)}}{{else}}{{../harm_can_absorb}}{{/if}}{{/if}}</i>
+                                        </input>
+                                    </label>
+                                    <!-- END CHECKBOXES -->
+                                    {{/if}} {{/each}}
+                                    <!-- START IF -->
+                                    {{#if this.aspect.when_marked}}{{#if (hasBoxes this)}}{{else}}
+                                    <label style="font-weight:900; padding-left:2px">{{this.harm_can_absorb}}</label>{{/if}}
+                                    <input type="text" class="aspect_box" name="data.tracks.{{this.name}}.aspect.name" value="{{this.aspect.name}}">
+                                    <i style="font-style:normal; position: absolute; left: 0; top: 0; transform: translate(-55%, -35%); font-weight: 900; font-size: 24px; color: #2f3542; text-shadow: 2px 2px 2px white;"></i>
+                                    </input>{{/if}}
+
+                                </div>
                                 {{/if}}{{/each}}
-                            </table>
+                            </div>
                         </div>
                         <!--end of tracks body-->
                     </div>

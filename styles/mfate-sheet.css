@@ -14,10 +14,15 @@
 
 .mfate-sheet__tab--main {
     display: grid;
-    grid-template-areas: "skills aspects" "tracks stunts";
-    grid-template-rows: minmax(50%, 545px) minmax(300px, 1fr);
+    /* grid-template-areas: "skills aspects" "tracks stunts";
+    grid-template-rows: minmax(50%, 545px) minmax(300px, 1fr); */
+    grid-template-areas: "skills aspects" "skills stunts" "tracks stunts";
+    grid-template-rows: minmax(200px, 4fr) minmax(112px, 1fr) minmax(240px, 2fr);
     grid-template-columns: 1fr 1fr;
     height: 100%;
+    column-gap: 6px;
+    row-gap: 6px;
+    margin: 6px;
 }
 
 .mfate-panel--skills {
@@ -87,7 +92,7 @@
 }
 
 .mfate-sheet__identity-name {
-    min-width: 190px;
+    min-width: 120px;
     border: 1px solid gray;
     font-size: xx-large;
     border: 0;
@@ -224,6 +229,8 @@
     display: flex;
     align-items: baseline;
     padding: .5em .5em 0;
+    background: #185CAB;
+    color: white;
 }
 
 .mfate-panel__header::after {
@@ -264,8 +271,9 @@
     overflow-y: auto;
     display: table;
     width: 100%;
-    border: .5em solid transparent;
-    padding: 0;
+    /* border: .5em solid transparent; */
+    /* padding: 0; */
+    padding: .5em;
 }
 
 .mfate-skills-list__item {
@@ -326,16 +334,48 @@
     overflow: auto;
 }
 
-.mfate-tracks-list {
+.mfate-tracks__list {
     display: table;
-    padding: 0 0.5em;
+    width: 100%;
 }
 
-.mfate-tracks-list__item {
+.mfate-tracks__item {
     display: table-row;
     list-style: none;
 }
 
-.mfate-tracks-list__item>* {
+.mfate-tracks__item-label {
     display: table-cell;
+    vertical-align: middle;
+}
+
+.mfate-checkbox {
+    margin: 0;
+    display: flex-row;
+    float: left;
+    position: relative;
+    padding-left: 0px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.mfate-tracks {
+    overflow: hidden;
+    height: 100%;
+}
+
+#tracks_body {
+    padding: 0 .5em;
+    overflow-y: auto;
+}
+
+.tracks-block {
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
