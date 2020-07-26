@@ -124,7 +124,7 @@
                         <!--Begin the tracks block-->
                         <div class="mfate-panel__header" name="tracks_header">
                             <b class="mfate-panel__header-label">Tracks</b>
-                            <div title="Open the Track Editor" style="font-size:medium;" name="edit_player_tracks" i icon class="fas fa-cog"></div>
+                            <div title="Open the Track Editor" style="font-size:medium;" name="edit_player_tracks" i icon class="fas fa-cog mfate-panel__header-button"></div>
                         </div>
                         <div name="tracks_body" id="tracks_body" style="scrollbar-width:thin">
                             <div class="mfate-tracks__list">
@@ -175,10 +175,10 @@
 
                 </div>
 
-                <div name="stunts_block" style="float:left; padding-left:10px; padding-top:10px">
+                <div name="stunts_block" style="float:left; padding-left:10px; padding-top:10px; overflow-y: auto;">
                     <!--Begin the stunts block-->
 
-                    <div name="stunts_body" id="stunts_body" style="overflow-y:auto; font-family:Montserrat; width:400px; height:400px; padding-top:10px; scrollbar-width:thin">
+                    <div name="stunts_body" id="stunts_body" style="font-family:Montserrat;scrollbar-width:thin">
                         <table style="background:white; color:black; border:none">
                             {{#each stunts}}
                             <tr>
