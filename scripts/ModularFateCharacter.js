@@ -16,8 +16,9 @@ export class ModularFateCharacter extends ActorSheet {
 
     static get defaultOptions() {
         const options = super.defaultOptions;
+        options.resizable = false
         options.width = "870"
-        options.height = "950"
+        options.height = "auto"
         options.scrollY = ["#skills_body", "#aspects_body", "#tracks_body", "#stunts_body", "#biography_body"]
         mergeObject(options, {
             tabs: [{
@@ -453,7 +454,7 @@ export class ModularFateCharacter extends ActorSheet {
         }
         this.refreshSpent = 0; //Will increase when we count tracks with the Paid field and stunts.
         this.freeStunts = game.settings.get("ModularFate", "freeStunts");
-        const sheetData = super.getData();
+        const sheetData = await super.getData();
         let numStunts = Object.keys(sheetData.data.stunts).length;
         let paidTracks = 0;
         let paidStunts = 0;

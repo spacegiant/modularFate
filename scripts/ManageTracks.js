@@ -51,6 +51,7 @@ Hooks.once('init',async function(){
             "fateCore":"Yes - Fate Core Defaults",
             "fateCondensed":"Yes - Fate Condensed Defaults",
             "accelerated":"Yes - Fate Accelerated Defaults",
+            "dfa":"Yes - Dresden Files Accelerated Defaults",
             "clearAll":"Yes - Clear All tracks"
         },
         default: "nothing",        // The default value for the setting
@@ -73,6 +74,12 @@ Hooks.once('init',async function(){
                 if (value=="accelerated"){
                     if (game.user.isGM){
                         game.settings.set("ModularFate","tracks",ModularFateConstants.getFateAcceleratedTracks());
+                    }
+                }
+                if (value == "dfa"){
+                    if (game.user.isGM){
+                        game.settings.set("ModularFate","tracks",ModularFateConstants.getDFAtracks());
+                        game.settings.set("ModularFate","track_categories",ModularFateConstants.getDFATrackCategories());
                     }
                 }
                 //This menu only does something when changed, so set back to 'nothing' to avoid
@@ -209,7 +216,7 @@ class EditTracks extends FormApplication {
         track_label_select.on("change", event => this._on_track_label_select(event, html))
         
         saveTrackButton.on("click", event => this._onSaveTrackButton(event, html));
-        track_select.on("click", event => this._track_selectClick(event, html));
+        track_select.on("change", event => this._track_selectChange(event, html));
         edit_track_name.on("change", event => this._edit_track_name_change(event, html));
         edit_linked_skillsButton.on("click", event => this._edit_linked_skillsButtonClick(event,html));
         deleteTrackButton.on("click",event => this._onDeleteTrackButton(event, html));
@@ -276,15 +283,23 @@ class EditTracks extends FormApplication {
         }
     }
 
-    async _track_selectClick(event, html){
+    async _track_selectChange(event, html){
         let name = document.getElementById("track_select").value;
         if (name=="New Track"){
+            this.track=undefined;
             document.getElementById("edit_track_name").value="";
             document.getElementById("edit_track_description").value="";
+            document.getElementById("edit_track_universal").checked=true;
+            document.getElementById("edit_track_unique").checked=true;
+            document.getElementById("edit_track_recovery_type").value="Fleeting";
+            document.getElementById("edit_track_aspect").value="No";
             document.getElementById("edit_track_when_marked").value="";
             document.getElementById("edit_track_when_recovers").value="";
-            document.getElementById("edit_linked_skills").disabled=true;
-            
+            document.getElementById("edit_track_boxes").value=0;
+            document.getElementById("edit_track_harm").value=0;
+            document.getElementById("edit_linked_skills").disabled=false;
+            document.getElementById("edit_track_paid").checked=false;
+            document.getElementById("track_label_select").value = "none";
         } else {
             let track=this.tracks[name];
             this.track=track;
