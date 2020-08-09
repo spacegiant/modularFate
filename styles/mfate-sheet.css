@@ -229,13 +229,14 @@
 .mfate-panel__header {
     display: flex;
     align-items: baseline;
-    padding: 5px 0 0 29px;
-    /* background: #185CAB; */
+    padding: 3px 0 0 12px;
+    background: #185CAB;
     color: white;
     position: relative;
     overflow: hidden;
     min-height: 30px;
-    margin-top: .5em;
+    margin-top: 0;
+    border-radius: 15px 0 0 15px;
 }
 
 
