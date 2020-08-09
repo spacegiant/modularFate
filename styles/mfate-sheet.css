@@ -17,7 +17,7 @@
     /* grid-template-areas: "skills aspects" "tracks stunts";
     grid-template-rows: minmax(50%, 545px) minmax(300px, 1fr); */
     grid-template-areas: "skills aspects" "skills stunts" "tracks stunts";
-    grid-template-rows: minmax(200px, 4fr) minmax(112px, 1fr) minmax(240px, 2fr);
+    grid-template-rows: minmax(200px, 2fr) minmax(112px, 1fr) minmax(240px, 2fr);
     grid-template-columns: 1fr 1fr;
     height: 100%;
     column-gap: 6px;
@@ -39,6 +39,10 @@
 
 .mfate-panel--stunts {
     grid-area: stunts;
+}
+
+.mfate-panel--stunts tr {
+    border-bottom: 1px solid #ccc;
 }
 
 .mfate-sheet .sheet-body {
@@ -78,7 +82,8 @@
 .mfate-sheet__header {
     display: flex;
     padding: .5em .5em 0;
-    background: lightgrey;
+    /* background: lightgrey; */
+    box-shadow: inset 0px -1px 0 0 #ccc;
 }
 
 .mfate-sheet__identity-panel {
@@ -89,6 +94,10 @@
 .mfate-sheet__identity-avatar {
     width: 100px;
     border: 1px solid gray;
+}
+
+.mfate-sheet__identity-avatar[src="icons/svg/mystery-man.svg"] {
+    filter: invert(75%) hue-rotate(122deg);
 }
 
 .mfate-sheet__identity-name {
@@ -143,7 +152,11 @@
 
 .mfate-sheet__meta-value {
     width: 75px;
-    border: 1px solid lightsteelblue;
+    border: 1px solid gray;
+}
+
+.mfate-sheet__meta-value:hover {
+    border-color: lightsteelblue;
 }
 
 .mfate-sheet__meta-value[disabled] {
@@ -166,7 +179,7 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 3px;
-    box-shadow: inset 0px -1px 0 0 #ccc;
+    /* box-shadow: inset 0px -1px 0 0 #ccc; */
 }
 
 .mfate-sheet__tabs-nav-item {}
@@ -197,6 +210,7 @@
 
 .mfate-sheet__tab {
     flex: 1;
+    margin-top: 1em;
 }
 
 .mfate-sheet__tab--main {
@@ -236,7 +250,7 @@
     overflow: hidden;
     min-height: 30px;
     margin-top: 0;
-    border-radius: 15px 0 0 15px;
+    border-radius: 15px;
 }
 
 
@@ -248,7 +262,8 @@
     height: 3px;
 } */
 
-.mfate-panel__header::after {
+
+/* .mfate-panel__header::after {
     content: "";
     display: block;
     background: #185CAB;
@@ -258,7 +273,7 @@
     bottom: 0;
     left: 17px;
     transform: skew(-40deg);
-}
+} */
 
 .mfate-panel__body {
     flex: 1;
@@ -272,6 +287,7 @@
     font-weight: bold;
     margin: 0 .5em 0 0;
     z-index: 1;
+    flex: 1;
 }
 
 .mfate-panel__header-button {
@@ -335,6 +351,7 @@
     list-style: none;
     border-bottom: 1px solid #ccc;
     margin-bottom: .5em;
+    padding-bottom: .5em;
 }
 
 .mfate-aspects-list__label {
