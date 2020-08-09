@@ -1,4 +1,4 @@
-<form class="mfate2-sheet contenteditable" style="background: white; width:100%; height: 100%; border:none !important">
+<form class="mfate-sheet contenteditable" style="background: white; width:100%; height: 100%; border:none !important">
 
     <div class="mfate-sheet__header">
         <div class="mfate-sheet__identity-panel">
@@ -236,34 +236,34 @@
                 </div>
                 <div class="mfate-sheet-extras__content">Content</div>
             </div>
+
+            <div>
+                <!--Begin Extras block-->
+                <div name="Extras header" style="width:800px; padding-top:10px; font-family:Montserrat; font-size:14pt; padding-bottom:2px; border-bottom:2px solid #2273b7"><b>Extras:</b>
+                    <div title="Add a new Extra" style="font-size:medium; padding-left:10px;
+                                                                padding-right:10px; padding-top:5px; float:right" name="add_player_extra" i icon class="fas fa-plus"></div>
+                </div>
+                <div name="extras_body" style="overflow-y:auto; width:800px; height:auto;">
+                    <table style="background:white; color:black; border:none;">
+                        {{#each items}}
+                        <tr>
+                            <td style="font-weight:bold; font-family:Montserrat;">{{{this.name}}}<button style="border:none; background-color:white; float:right; width:20px; height:20px " i icon class="fas fa-trash
+                    " type="button " name="delete_extra " id="{{this._id}};"></button>
+                                <button name="edit_extra" type="button" style="border:none; background-color:white; float:right; width:20px; height:20px;" i icon class="fas fa-edit " id="{{this._id}} "></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom:20px; font-family:Montserrat ">{{{this.data.description.value}}}</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                </div>
+                <!--End of Extras Body block-->
+            </div>
+            <!--End of Extras block-->
         </div>
         <!--end of bio block-->
 
-
-        <div>
-            <!--Begin Extras block-->
-            <div name="Extras header" style="width:800px; padding-top:10px; font-family:Montserrat; font-size:14pt; padding-bottom:2px; border-bottom:2px solid #2273b7"><b>Extras:</b>
-                <div title="Add a new Extra" style="font-size:medium; padding-left:10px;
-                                                            padding-right:10px; padding-top:5px; float:right" name="add_player_extra" i icon class="fas fa-plus"></div>
-            </div>
-            <div name="extras_body" style="overflow-y:auto; width:800px; height:auto;">
-                <table style="background:white; color:black; border:none;">
-                    {{#each items}}
-                    <tr>
-                        <td style="font-weight:bold; font-family:Montserrat;">{{{this.name}}}<button style="border:none; background-color:white; float:right; width:20px; height:20px " i icon class="fas fa-trash
-                " type="button " name="delete_extra " id="{{this._id}};"></button>
-                            <button name="edit_extra" type="button" style="border:none; background-color:white; float:right; width:20px; height:20px;" i icon class="fas fa-edit " id="{{this._id}} "></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-bottom:20px; font-family:Montserrat ">{{{this.data.description.value}}}</td>
-                    </tr>
-                    {{/each}}
-                </table>
-            </div>
-            <!--End of Extras Body block-->
-        </div>
-        <!--End of Extras block-->
         </div>
         <!--End of bio tab-->
     </section>
