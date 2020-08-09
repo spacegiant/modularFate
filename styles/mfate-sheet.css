@@ -408,6 +408,10 @@
     list-style: none;
 }
 
+.mfate-tracks__item>* {
+    display: table-cell;
+}
+
 .mfate-tracks__item-label {
     display: table-cell;
     vertical-align: middle;
