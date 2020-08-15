@@ -4,6 +4,14 @@ Handlebars.registerHelper("add1", function(value) {
     return value + 1;
 });
 
+Handlebars.registerHelper("category", function(category1, category2) {
+    if (category1 == "All" || category1 == category2) {
+        return true;
+    } else {
+        return false;
+    }
+})
+
 Handlebars.registerHelper("hasBoxes", function(track) {
     if (track.box_values == undefined || track.box_values.length == 0) {
         return false;
@@ -35,13 +43,25 @@ export class ModularFateCharacter extends ActorSheet {
     }
 
     get template() {
-        return 'systems/ModularFate/templates/ModularFateSheet2.html';
+        let template = game.settings.get("ModularFate", "sheet_template");
+        let limited_template = game.settings.get("ModularFate", "limited_sheet_template");
+
+        if (template != undefined & !this.actor.limited) {
+            return template;
+        } else {
+            if (limited_template != undefined & this.actor.limited) {
+                return limited_template;
+            } else {
+                return 'systems/ModularFate/templates/ModularFateSheet.html';
+            }
+        }
     }
 
     constructor(...args) {
         super(...args);
         this.first_run = true;
         this.editing = false;
+        this.track_category = "All";
     }
 
     //Here are the action listeners
@@ -93,8 +113,34 @@ export class ModularFateCharacter extends ActorSheet {
 
             const stunt_roll = html.find("button[name='stunt_name']");
             stunt_roll.on("click", event => this._on_stunt_roll_click(event, html));
+
+            const stunt_db = html.find("div[name='stunt_db']");
+            stunt_db.on("click", event => this._stunt_db_click(event, html));
+
+            const db_add = html.find("button[name='db_stunt']");
+            db_add.on("click", event => this._db_add_click(event, html));
+
+            const cat_select = html.find("select[id='track_category']");
+            cat_select.on("change", event => this._cat_select_change(event, html));
         }
         super.activateListeners(html);
+    }
+
+    async _cat_select_change(event, html) {
+        this.track_category = event.target.value;
+    }
+
+    async _db_add_click(event, html) {
+        let name = event.target.id.split("_")[0];
+        let db = duplicate(game.settings.get("ModularFate", "stunts"));
+        db[name] = this.object.data.data.stunts[name];
+        await game.settings.set("ModularFate", "stunts", db);
+        ui.notifications.info("Added " + name + " to the stunt database");
+    }
+
+    async _stunt_db_click(event, html) {
+        let sd = new StuntDB(this.actor);
+        sd.render(true);
     }
 
     async _on_stunt_roll_click(event, html) {
@@ -534,7 +580,14 @@ export class ModularFateCharacter extends ActorSheet {
         sheetData.gameSkillPoints = game.settings.get("ModularFate", "skillTotal")
         sheetData.GM = game.user.isGM;
 
-        let track_categories = game.settings.get("ModularFate", "track_categories");
+        let track_categories = this.object.data.data.tracks;
+        let cats = new Set();
+        for (let c in track_categories) {
+            let cat = track_categories[c].category;
+            cats.add(cat);
+        }
+        track_categories = Array.from(cats);
+        sheetData.category = this.track_category;
         sheetData.track_categories = track_categories;
         sheetData.tracks = this.object.data.data.tracks;
         sheetData.stunts = this.object.data.data.stunts;

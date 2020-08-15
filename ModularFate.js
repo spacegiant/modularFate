@@ -283,12 +283,43 @@ Hooks.on('updateScene', (...args) => {
 
 Hooks.once('init', async function () {
 
+    game.settings.register("ModularFate","stunts", {
+        name: "Stunts Database",
+        hint:"A list of approved stunts that can be added to characters",
+        scope:"world",
+        config:false,
+        type:Object
+    })
+
+    //Initialise the setting if it is currently empty.
+    if (jQuery.isEmptyObject(game.settings.get("ModularFate","stunts"))){
+        game.settings.set("ModularFate","skills",{});
+    }
+
     game.settings.register("ModularFate", "run_once", {
         name: "Run Once?",
         hint:"Pops up a brief tutorial message on first load of a world with this system",
         scope:"world",
         config:false,
         type: Boolean
+    })
+
+    game.settings.register("ModularFate","sheet_template", {
+        name:"Default Sheet Template",
+        hint:"Give a path to a custom character sheet template here to override the standard sheet.",
+        scope:"world",
+        config:"true",
+        type:String,
+        default:'systems/ModularFate/templates/ModularFateSheet.html'
+    })
+
+    game.settings.register("ModularFate","limited_sheet_template", {
+        name:"Default Limited Sheet Template",
+        hint:"Give a path to a custom template to override the character sheet when the viewer has only Limited permission.",
+        scope:"world",
+        config:"true",
+        type:String,
+        default:'systems/ModularFate/templates/ModularFateSheet.html'
     })
 
     game.system.entityTypes.Item = ["Extra"];

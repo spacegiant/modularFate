@@ -6,7 +6,7 @@ constructor(){
     game.system.apps["combat"].push(this);
     game.system.apps["scene"].push(this); //Maybe? If we want to store scene notes, aspects, etc.
     game.system.apps["user"].push(this);
-    this.category="Combat";
+    this.category="All";
     this.editingSceneNotes = false;
     if (game.system.tokenAvatar == undefined){
         game.system.tokenAvatar = true;
@@ -52,8 +52,15 @@ activateListeners(html) {
     const add_sit_aspect = html.find("button[id='add_sit_aspect']")
     add_sit_aspect.on("click", event => this._add_sit_aspect(event, html));
 
+    //Situation Aspect Buttons
     const del_sit_aspect = html.find("button[name='del_sit_aspect']");
     del_sit_aspect.on("click", event => this._del_sit_aspect(event, html));
+
+    const addToScene = html.find("button[name='addToScene']");
+    addToScene.on("click", event => this._addToScene(event, html));
+
+    const panToAspect = html.find("button[name='panToAspect']");
+    panToAspect.on("click", event => this._panToAspect(event, html));
 
     const free_i = html.find("input[name='free_i']");
     free_i.on("change", event => this._free_i_button(event, html));
@@ -145,6 +152,68 @@ async _free_i_button(event,html){
     let aspect = situation_aspects[situation_aspects.findIndex(sit => sit.name == name)];
     aspect.free_invokes = value;
     await game.scenes.viewed.setFlag("ModularFate","situation_aspects",situation_aspects);
+    //ToDo: Add code to change number of free invokes showing on the scene note for this aspect, if it exists.
+    let drawing = canvas.drawings.objects.children.find(drawing => drawing.data.text.startsWith(name));
+    if (drawing != undefined){
+        let text;
+        if (value == 1){
+            text = name+" ("+value + " free invoke)";    
+        } else {
+            text = name+" ("+value + " free invokes)";
+        }
+        drawing.update({
+            "text":text,
+             width: text.length*25
+        });
+    }
+}
+
+async _panToAspect(event, html){
+    let name=event.target.id.split("_")[1];
+    let drawing = canvas.drawings.objects.children.find(drawing => drawing.data.text.startsWith(name));
+    
+    if (drawing != undefined) {
+        let x = drawing.data.x;
+        let y = drawing.data.y;
+        canvas.animatePan({x:x, y:y});
+    }
+}
+
+async _addToScene(event, html){
+    let name=event.target.id.split("_")[1];
+    let value=html.find(`input[id="${name}_free_invokes"]`)[0].value;
+
+    if (canvas.drawings.objects.children.find(drawing => drawing.data.text.startsWith(name))==undefined)
+    {
+        let text;
+        if (value == 1){
+            text = name+" ("+value + " free invoke)";    
+        } else {
+            text = name+" ("+value + " free invokes)";
+        }
+
+            Drawing.create({
+                type: CONST.DRAWING_TYPES.RECTANGLE,
+                author: game.user._id,
+                x: canvas.stage.pivot._x,
+                y: canvas.stage.pivot._y,
+                width: text.length*25,
+                height: 75,
+                fillType: CONST.DRAWING_FILL_TYPES.SOLID,
+                fillColor: "#FFFFFF",
+                fillAlpha: 1,
+                strokeWidth: 4,
+                strokeColor: "#000000",
+                strokeAlpha: 1,
+                text: text,
+                fontSize: 48,
+                textColor: "#000000",
+                points: []
+            });   
+    }
+    else {
+        ui.notifications.error("There's already a note for that aspect");
+    }
 }
 
 async _del_sit_aspect(event, html){
@@ -153,6 +222,12 @@ async _del_sit_aspect(event, html){
     let situation_aspects = duplicate(game.scenes.viewed.getFlag("ModularFate", "situation_aspects"));
     situation_aspects.splice(situation_aspects.findIndex(sit => sit.name == name),1);
     await game.scenes.viewed.setFlag("ModularFate","situation_aspects",situation_aspects);
+
+    //If there's a note on the scene for this aspect, delete it
+    let drawing = canvas.drawings.objects.children.find(drawing => drawing.data.text.startsWith(name));
+    if (drawing != undefined){
+        drawing.delete();
+    }
 }
 
 async _add_sit_aspect(event, html){
@@ -407,8 +482,13 @@ async getData(){
     data.GMUsers = GMUsers;
 
     data.category=this.category;
- 
-    data.categories = game.settings.get("ModularFate","track_categories")
+    let categories = new Set();
+    for (let token of all_tokens){
+        for (let t in token.actor.data.data.tracks){
+            categories.add(token.actor.data.data.tracks[t].category);
+        }
+    }
+    data.categories = Array.from(categories);
     data.tokenAvatar = game.system.tokenAvatar;
     return data;
 }
@@ -491,12 +571,12 @@ class TimedEvent extends Application {
         }
         if (currentRound != "NoCombat"){
             var peText = "No Pending Events<p></p>"
-            let pendingEvents = game.combat.getFlag("TimedEvent","timedEvents");
+            let pendingEvents = game.combat.getFlag("ModularFate","timedEvents");
             if (pendingEvents != null || pendingEvents != undefined){
                 peText=
                 `<tr>
-                    <td>Round</td>
-                    <td>Pending Event</td>
+                    <td style="font-weight:bold">Round</td>
+                    <td style="font-weight:bold">Pending Event</td>
                 </tr>`
                 pendingEvents.forEach(event => {
                     if (event.complete === false){
@@ -508,10 +588,10 @@ class TimedEvent extends Application {
                 "title":"Timed Event",
                 "content":`<h1>Create a Timed Event</h1>
                             The current exchange is ${game.combat.round}.<p></p>
-                            <table>
+                            <table style="background:none; border:none">
                                 ${peText}
                             </table>
-                            <table>
+                            <table style="background:none; border:none">
                                 <tr>
                                     <td>What is your event?</td>
                                     <td><input type="text" id="eventToCreate" name="eventToCreate" style="background: white; color: black;" autofocus></input></td>
@@ -525,23 +605,23 @@ class TimedEvent extends Application {
                     "buttons":{
                         create:{label:"Create", callback:async () => {
                             //if no flags currently set, initialise
-                            var timedEvents = game.combat.getFlag("TimedEvent","timedEvents");
+                            var timedEvents = game.combat.getFlag("ModularFate","timedEvents");
                             
                             if (timedEvents ==null || timedEvents == undefined){
-                                await game.combat.setFlag("TimedEvent","timedEvents",[
+                                await game.combat.setFlag("ModularFate","timedEvents",[
                                                                                         {   "round":`${document.getElementById("eventExchange").value}`,
                                                                                             "event":`${document.getElementById("eventToCreate").value}`,
                                                                                             "complete":false
                                                                                         }
                                                                                 ])
-                                                                                timedEvents=game.combat.getFlag("TimedEvent","timedEvents");
+                                                                                timedEvents=game.combat.getFlag("ModularFate","timedEvents");
                             } else {
                                 timedEvents.push({   
                                                     "round":`${document.getElementById("eventExchange").value}`,
                                                     "event":`${document.getElementById("eventToCreate").value}`,
                                                     "complete":false
                                 });
-                                game.combat.setFlag("TimedEvent","timedEvents",timedEvents);
+                                game.combat.setFlag("ModularFate","timedEvents",timedEvents);
                                 
                                 }
 
@@ -551,8 +631,8 @@ class TimedEvent extends Application {
                     }
                 }
             let dO = Dialog.defaultOptions;
-            dO.width=400;
-            dO.height=250;
+            dO.width="auto";
+            dO.height="auto";
             dO.resizable="true"
             let d = new Dialog(dp, dO);
             d.render(true);
@@ -562,7 +642,7 @@ class TimedEvent extends Application {
 Hooks.on('renderCombatTracker', () => {
     try {
         var r = game.combat.round;
-        let pendingEvents = game.combat.getFlag("TimedEvent","timedEvents");
+        let pendingEvents = game.combat.getFlag("ModularFate","timedEvents");
         for (let i = 0; i<pendingEvents.length;i++){
             var event = pendingEvents[i];
             if (r==event.round && event.complete != true){
