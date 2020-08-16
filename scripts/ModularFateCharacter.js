@@ -52,7 +52,7 @@ export class ModularFateCharacter extends ActorSheet {
             if (limited_template != undefined & this.actor.limited) {
                 return limited_template;
             } else {
-                return 'systems/ModularFate/templates/ModularFateSheet.html';
+                return 'systems/ModularFate/templates/ModularFateSheet2.html';
             }
         }
     }

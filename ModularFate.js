@@ -32,173 +32,173 @@ import { ModularFateCharacter } from "./scripts/ModularFateCharacter.js"
 import { ExtraSheet } from "./scripts/ExtraSheet.js";
 
 Hooks.on("preCreateActor", (data, options, userId) => {
-    if (data.type =="Core" || data.type=="Accelerated"){
+    if (data.type == "Core" || data.type == "Accelerated") {
         //console.log("importing")
         data = migrateFateCharacter(data);
         //console.log(data);
     }
-  });
+});
 
 async function importFateCharacter(actor) {
     console.log("Original Fate Core character detected; setting them up for ModularFate")
-            let actorData = duplicate(actor.data); //We'll do all our modifications to this data and then write out a corrected version.
-            //We won't be using these
-            delete actorData.data.health;
-            delete actorData.data.details.extras;
+    let actorData = duplicate(actor.data); //We'll do all our modifications to this data and then write out a corrected version.
+    //We won't be using these
+    delete actorData.data.health;
+    delete actorData.data.details.extras;
 
-            let aspects = {}
-            //console.log("Setting up aspects for " + actor.name)
-            let hc = {"name":"High Concept","description":"Your high concept is a broad description of the character, covering the vital bits. It’s how you would open your pitch for the character when telling a friend about them.","value":actorData.data.aspects.hc.value};
-            aspects["High Concept"]=hc;
-            let trouble = {"name":"Trouble","description":"Next is your character’s trouble—something that makes your character’s life more complicated. It could be a personal weakness, family entanglements, or other obligations. Pick something you’ll enjoy roleplaying!", "value":actorData.data.aspects.trouble.value}
-            aspects["Trouble"]=trouble;
-            let other1 = {"name":"Other 1","description":"A third aspect", "value":actorData.data.aspects.other.value[0]}
-            aspects["Other 1"]=other1;
-            let other2 = {"name":"Other 2","description":"A fourth aspect", "value":actorData.data.aspects.other.value[1]}
-            aspects["Other 2"]=other2;
-            let other3 = {"name":"Other 3","description":"A fifth aspect", "value":actorData.data.aspects.other.value[2]}
-            aspects["Other 3"]=other3;
-            
-            //Delete the old aspects
-            delete actorData.data.aspects;
-            actorData.data.aspects = aspects;
+    let aspects = {}
+        //console.log("Setting up aspects for " + actor.name)
+    let hc = { "name": "High Concept", "description": "Your high concept is a broad description of the character, covering the vital bits. It’s how you would open your pitch for the character when telling a friend about them.", "value": actorData.data.aspects.hc.value };
+    aspects["High Concept"] = hc;
+    let trouble = { "name": "Trouble", "description": "Next is your character’s trouble—something that makes your character’s life more complicated. It could be a personal weakness, family entanglements, or other obligations. Pick something you’ll enjoy roleplaying!", "value": actorData.data.aspects.trouble.value }
+    aspects["Trouble"] = trouble;
+    let other1 = { "name": "Other 1", "description": "A third aspect", "value": actorData.data.aspects.other.value[0] }
+    aspects["Other 1"] = other1;
+    let other2 = { "name": "Other 2", "description": "A fourth aspect", "value": actorData.data.aspects.other.value[1] }
+    aspects["Other 2"] = other2;
+    let other3 = { "name": "Other 3", "description": "A fifth aspect", "value": actorData.data.aspects.other.value[2] }
+    aspects["Other 3"] = other3;
 
-            //This can stay blank as it will be initialised from the system's universal tracks upon first load of the character sheet.
-            let tracks = {}
-            actorData.data.tracks = tracks;
+    //Delete the old aspects
+    delete actorData.data.aspects;
+    actorData.data.aspects = aspects;
 
-            //Now set up skills, stunts, and extras from items
-            let skills = {}
-            let stunts = {}
-            let items = [];
-            let allitems = actorData.items;
+    //This can stay blank as it will be initialised from the system's universal tracks upon first load of the character sheet.
+    let tracks = {}
+    actorData.data.tracks = tracks;
 
-            for (let i = 0; i<allitems.length; i++){            
-                let item = allitems[i];
-                if (item.type=="Extra"){
-                    item.refresh=0;
-                    items.push(item);
-                }
-                if (item.type=="Skill"){
-                    let newSkill = {
-                        "name":item.name,
-                        "description":item.data.description.value,
-                        "rank":item.data.level,
-                        "attack":"",
-                        "caa":"",
-                        "overcome":"",
-                        "defend":"",
-                        "pc":true
-                    }
-                    skills[newSkill.name]=newSkill;
-                }
-                if (item.type=="Stunt"){
-                    let newStunt ={
-                        "name":item.name,
-                        "linked_skill":"",
-                        "description":item.data.description.value,
-                        "refresh_cost":1,
-                        "overcome":false,
-                        "caa":false,
-                        "attack":false,
-                        "defend":false,
-                        "bonus":0
-                    }
-                    stunts[newStunt.name]=newStunt;
-                }
+    //Now set up skills, stunts, and extras from items
+    let skills = {}
+    let stunts = {}
+    let items = [];
+    let allitems = actorData.items;
+
+    for (let i = 0; i < allitems.length; i++) {
+        let item = allitems[i];
+        if (item.type == "Extra") {
+            item.refresh = 0;
+            items.push(item);
+        }
+        if (item.type == "Skill") {
+            let newSkill = {
+                "name": item.name,
+                "description": item.data.description.value,
+                "rank": item.data.level,
+                "attack": "",
+                "caa": "",
+                "overcome": "",
+                "defend": "",
+                "pc": true
             }
-            actorData.data.skills=skills;
-            actorData.data.stunts=stunts
-            actorData.items=items;
-            actorData.type="ModularFate"
-            actorData.data.details.fatePoints = duplicate(actorData.data.details.points)
-            delete actorData.data.details.points;
-            //console.log(actorData);
-            await actor.update({"data.aspects":"-=null"})
-            await actor.update(actorData)
+            skills[newSkill.name] = newSkill;
+        }
+        if (item.type == "Stunt") {
+            let newStunt = {
+                "name": item.name,
+                "linked_skill": "",
+                "description": item.data.description.value,
+                "refresh_cost": 1,
+                "overcome": false,
+                "caa": false,
+                "attack": false,
+                "defend": false,
+                "bonus": 0
+            }
+            stunts[newStunt.name] = newStunt;
+        }
+    }
+    actorData.data.skills = skills;
+    actorData.data.stunts = stunts
+    actorData.items = items;
+    actorData.type = "ModularFate"
+    actorData.data.details.fatePoints = duplicate(actorData.data.details.points)
+    delete actorData.data.details.points;
+    //console.log(actorData);
+    await actor.update({ "data.aspects": "-=null" })
+    await actor.update(actorData)
 }
 
 async function migrateFateCharacter(actorData) {
     console.log("Original Fate Core character detected; setting them up for ModularFate")
-            delete actorData.data.health;
-            delete actorData.data.details.extras;
+    delete actorData.data.health;
+    delete actorData.data.details.extras;
 
-            let aspects = {}
-            console.log("Setting up aspects for " + actorData.name)
-            let hc = {"name":"High Concept","description":"Your high concept is a broad description of the character, covering the vital bits. It’s how you would open your pitch for the character when telling a friend about them.","value":actorData.data.aspects.hc.value};
-            aspects["High Concept"]=hc;
-            let trouble = {"name":"Trouble","description":"Next is your character’s trouble—something that makes your character’s life more complicated. It could be a personal weakness, family entanglements, or other obligations. Pick something you’ll enjoy roleplaying!", "value":actorData.data.aspects.trouble.value}
-            aspects["Trouble"]=trouble;
-            let other1 = {"name":"Other 1","description":"A third aspect", "value":actorData.data.aspects.other.value[0]}
-            aspects["Other 1"]=other1;
-            let other2 = {"name":"Other 2","description":"A fourth aspect", "value":actorData.data.aspects.other.value[1]}
-            aspects["Other 2"]=other2;
-            let other3 = {"name":"Other 3","description":"A fifth aspect", "value":actorData.data.aspects.other.value[2]}
-            aspects["Other 3"]=other3;
-            
-            //Delete the old aspects
-            delete actorData.data.aspects;
-            actorData.data.aspects = aspects;
+    let aspects = {}
+    console.log("Setting up aspects for " + actorData.name)
+    let hc = { "name": "High Concept", "description": "Your high concept is a broad description of the character, covering the vital bits. It’s how you would open your pitch for the character when telling a friend about them.", "value": actorData.data.aspects.hc.value };
+    aspects["High Concept"] = hc;
+    let trouble = { "name": "Trouble", "description": "Next is your character’s trouble—something that makes your character’s life more complicated. It could be a personal weakness, family entanglements, or other obligations. Pick something you’ll enjoy roleplaying!", "value": actorData.data.aspects.trouble.value }
+    aspects["Trouble"] = trouble;
+    let other1 = { "name": "Other 1", "description": "A third aspect", "value": actorData.data.aspects.other.value[0] }
+    aspects["Other 1"] = other1;
+    let other2 = { "name": "Other 2", "description": "A fourth aspect", "value": actorData.data.aspects.other.value[1] }
+    aspects["Other 2"] = other2;
+    let other3 = { "name": "Other 3", "description": "A fifth aspect", "value": actorData.data.aspects.other.value[2] }
+    aspects["Other 3"] = other3;
 
-            //This can stay blank as it will be initialised from the system's universal tracks upon first load of the character sheet.
-            let tracks = {}
-            actorData.data.tracks = tracks;
+    //Delete the old aspects
+    delete actorData.data.aspects;
+    actorData.data.aspects = aspects;
 
-            //Now set up skills, stunts, and extras from items
-            let skills = {}
-            let stunts = {}
-            let items = [];
-            let allitems = actorData.items;
+    //This can stay blank as it will be initialised from the system's universal tracks upon first load of the character sheet.
+    let tracks = {}
+    actorData.data.tracks = tracks;
 
-            for (let i = 0; i<allitems.length; i++){            
-                let item = allitems[i];
-                if (item.type=="Extra"){
-                    item.refresh=0;
-                    items.push(item);
-                }
-                if (item.type=="Skill"){
-                    let newSkill = {
-                        "name":item.name,
-                        "description":item.data.description.value,
-                        "rank":item.data.level,
-                        "attack":"",
-                        "caa":"",
-                        "overcome":"",
-                        "defend":"",
-                        "pc":true
-                    }
-                    skills[newSkill.name]=newSkill;
-                }
-                if (item.type=="Stunt"){
-                    let newStunt ={
-                        "name":item.name,
-                        "linked_skill":"",
-                        "description":item.data.description.value,
-                        "refresh_cost":1,
-                        "overcome":false,
-                        "caa":false,
-                        "attack":false,
-                        "defend":false,
-                        "bonus":0
-                    }
-                    stunts[newStunt.name]=newStunt;
-                }
+    //Now set up skills, stunts, and extras from items
+    let skills = {}
+    let stunts = {}
+    let items = [];
+    let allitems = actorData.items;
+
+    for (let i = 0; i < allitems.length; i++) {
+        let item = allitems[i];
+        if (item.type == "Extra") {
+            item.refresh = 0;
+            items.push(item);
+        }
+        if (item.type == "Skill") {
+            let newSkill = {
+                "name": item.name,
+                "description": item.data.description.value,
+                "rank": item.data.level,
+                "attack": "",
+                "caa": "",
+                "overcome": "",
+                "defend": "",
+                "pc": true
             }
-            actorData.data.skills=skills;
-            actorData.data.stunts=stunts
-            actorData.items=items;
-            actorData.type="ModularFate"
-            actorData.data.details.fatePoints = duplicate(actorData.data.details.points)
-            delete actorData.data.details.points;
-            //console.log(actorData);
-            return actorData;
+            skills[newSkill.name] = newSkill;
+        }
+        if (item.type == "Stunt") {
+            let newStunt = {
+                "name": item.name,
+                "linked_skill": "",
+                "description": item.data.description.value,
+                "refresh_cost": 1,
+                "overcome": false,
+                "caa": false,
+                "attack": false,
+                "defend": false,
+                "bonus": 0
+            }
+            stunts[newStunt.name] = newStunt;
+        }
+    }
+    actorData.data.skills = skills;
+    actorData.data.stunts = stunts
+    actorData.items = items;
+    actorData.type = "ModularFate"
+    actorData.data.details.fatePoints = duplicate(actorData.data.details.points)
+    delete actorData.data.details.points;
+    //console.log(actorData);
+    return actorData;
 }
 
-Hooks.once('ready', async function () {
-    if (game.settings.get("ModularFate","run_once") == false){
-        if (game.user.isGM){
-            ModularFateConstants.awaitOKDialog("Welcome to the Modular Fate System!","Welcome! Head on over to the System options in Foundry's Settings menu to get everything set up. Use the options to pre-load default skills, aspects, and tracks from Core, Condensed or Accelerated and then customise them, or you can start completely from scratch - it's up to you!<p/>Any character created will be initialised using those settings, so it's best not to create any characters until you've finished setting up your game.<p/> Have fun!",500,250);
-            game.settings.set("ModularFate","run_once", true)
+Hooks.once('ready', async function() {
+    if (game.settings.get("ModularFate", "run_once") == false) {
+        if (game.user.isGM) {
+            ModularFateConstants.awaitOKDialog("Welcome to the Modular Fate System!", "Welcome! Head on over to the System options in Foundry's Settings menu to get everything set up. Use the options to pre-load default skills, aspects, and tracks from Core, Condensed or Accelerated and then customise them, or you can start completely from scratch - it's up to you!<p/>Any character created will be initialised using those settings, so it's best not to create any characters until you've finished setting up your game.<p/> Have fun!", 500, 250);
+            game.settings.set("ModularFate", "run_once", true)
         }
     }
 
@@ -208,128 +208,128 @@ Hooks.once('ready', async function () {
     //We need to set their skills up according to the items they have.
     //We need to copy over their aspects.
     //We need to copy over their biography and description
-    
+
     let actors = game.actors.entries;
-    actors.forEach(actor =>{
-        if (actor.data.type == "Core" || actor.data.type=="Accelerated"){
+    actors.forEach(actor => {
+        if (actor.data.type == "Core" || actor.data.type == "Accelerated") {
             importFateCharacter(actor);
         }
     })
 })
 
 Hooks.on('updateToken', (scene, token, data) => {
-    if (data.hidden != undefined || data.actorData != undefined || data.flags != undefined || data.name!=undefined){
-        game.system.apps["actor"].forEach(a=> {
+    if (data.hidden != undefined || data.actorData != undefined || data.flags != undefined || data.name != undefined) {
+        game.system.apps["actor"].forEach(a => {
             a.renderMe(token._id, data);
         })
     }
 })
 
-Hooks.on('updateUser',(...args) =>{
-        game.system.apps["user"].forEach (a=> {
-            a.renderMe("updateUser");
-        })
+Hooks.on('updateUser', (...args) => {
+    game.system.apps["user"].forEach(a => {
+        a.renderMe("updateUser");
+    })
 })
 
-Hooks.on('renderPlayerList',(...args) =>{
-    game.system.apps["user"].forEach (a=> {
+Hooks.on('renderPlayerList', (...args) => {
+    game.system.apps["user"].forEach(a => {
         a.renderMe("updateUser");
     })
 })
 
 Hooks.on('updateActor', (actor, data) => {
-    game.system.apps["actor"].forEach(a=> {
+    game.system.apps["actor"].forEach(a => {
         a.renderMe(actor.id, data);
     })
 })
 
 Hooks.on('renderCombatTracker', () => {
-    game.system.apps["combat"].forEach(a=> {
+    game.system.apps["combat"].forEach(a => {
         a.renderMe("renderCombatTracker");
     })
 })
 Hooks.on('updateCombat', (...args) => {
     let ags = args;
-    game.system.apps["combat"].forEach(a=> {
+    game.system.apps["combat"].forEach(a => {
         a.renderMe(ags);
     })
 })
 
 Hooks.on('deleteCombat', (...args) => {
-    game.system.apps["combat"].forEach(a=> {
+    game.system.apps["combat"].forEach(a => {
         a.renderMe("deleteCombat");
     })
 })
 
 Hooks.on('deleteToken', (...args) => {
-    game.system.apps["actor"].forEach(a=> {
+    game.system.apps["actor"].forEach(a => {
         a.renderMe("deleteToken")
         console.log(canvas.tokens.placeables)
     })
 })
 
 Hooks.on('createToken', (...args) => {
-    game.system.apps["actor"].forEach(a=> {
+    game.system.apps["actor"].forEach(a => {
         a.renderMe("createToken");
     })
 })
 
 Hooks.on('updateScene', (...args) => {
     let ags = args;
-    game.system.apps["combat"].forEach(a=> {
+    game.system.apps["combat"].forEach(a => {
         a.renderMe(args);
     })
 })
 
-Hooks.once('init', async function () {
+Hooks.once('init', async function() {
 
-    game.settings.register("ModularFate","stunts", {
+    game.settings.register("ModularFate", "stunts", {
         name: "Stunts Database",
-        hint:"A list of approved stunts that can be added to characters",
-        scope:"world",
-        config:false,
-        type:Object
+        hint: "A list of approved stunts that can be added to characters",
+        scope: "world",
+        config: false,
+        type: Object
     })
 
     //Initialise the setting if it is currently empty.
-    if (jQuery.isEmptyObject(game.settings.get("ModularFate","stunts"))){
-        game.settings.set("ModularFate","skills",{});
+    if (jQuery.isEmptyObject(game.settings.get("ModularFate", "stunts"))) {
+        game.settings.set("ModularFate", "skills", {});
     }
 
     game.settings.register("ModularFate", "run_once", {
         name: "Run Once?",
-        hint:"Pops up a brief tutorial message on first load of a world with this system",
-        scope:"world",
-        config:false,
+        hint: "Pops up a brief tutorial message on first load of a world with this system",
+        scope: "world",
+        config: false,
         type: Boolean
     })
 
-    game.settings.register("ModularFate","sheet_template", {
-        name:"Default Sheet Template",
-        hint:"Give a path to a custom character sheet template here to override the standard sheet.",
-        scope:"world",
-        config:"true",
-        type:String,
-        default:'systems/ModularFate/templates/ModularFateSheet.html'
+    game.settings.register("ModularFate", "sheet_template", {
+        name: "Default Sheet Template",
+        hint: "Give a path to a custom character sheet template here to override the standard sheet.",
+        scope: "world",
+        config: "true",
+        type: String,
+        default: 'systems/ModularFate/templates/ModularFateSheet2.html'
     })
 
-    game.settings.register("ModularFate","limited_sheet_template", {
-        name:"Default Limited Sheet Template",
-        hint:"Give a path to a custom template to override the character sheet when the viewer has only Limited permission.",
-        scope:"world",
-        config:"true",
-        type:String,
-        default:'systems/ModularFate/templates/ModularFateSheet.html'
+    game.settings.register("ModularFate", "limited_sheet_template", {
+        name: "Default Limited Sheet Template",
+        hint: "Give a path to a custom template to override the character sheet when the viewer has only Limited permission.",
+        scope: "world",
+        config: "true",
+        type: String,
+        default: 'systems/ModularFate/templates/ModularFateSheet2.html'
     })
 
     game.system.entityTypes.Item = ["Extra"];
     game.system.entityTypes.Actor = ["ModularFate"]
 
-    game.system.apps= {
-        actor:[],
-        combat:[],
-        scene:[],
-        user:[]
+    game.system.apps = {
+        actor: [],
+        combat: [],
+        scene: [],
+        user: []
     }
 
     //On init, we initialise any settings and settings menus and HUD overrides as required.
@@ -348,55 +348,53 @@ Hooks.once('init', async function () {
         type: Number
     });
     //Initialise if not yet set
-    if (isNaN(game.settings.get("ModularFate","refreshTotal"))){
-            game.settings.set("ModularFate","refreshTotal",3);
+    if (isNaN(game.settings.get("ModularFate", "refreshTotal"))) {
+        game.settings.set("ModularFate", "refreshTotal", 3);
     }
-    
+
     //Register a setting for the game's Issues?
 });
 
 SidebarDirectory.prototype._onCreate = async function(event) {
-        // Do not allow the creation event to bubble to other listeners
-        event.preventDefault();
-        event.stopPropagation();
-    
-        // Collect data
-        const ent = this.constructor.entity;
-        const cls = this.constructor.cls;
-        const types = game.system.entityTypes[ent];
-    
-        // Setup entity data
-        const createData = {
-          name: `New ${game.i18n.localize(cls.config.label)}`,
-          type: types[0],
-          folder: event.currentTarget.dataset.folder
-        };
-    
-        // Render the entity creation form
-        let templateData = {upper: ent, lower: ent.toLowerCase(), types: types},
-            dlg = await renderTemplate(`templates/sidebar/entity-create.html`, templateData);
-    
-        // Render the confirmation dialog window
-        new Dialog({
-          title: `Create ${createData.name}`,
-          content: dlg,
-          buttons: {
-            create: {
-              icon: '<i class="fas fa-check"></i>',
-              label: `Create ${game.i18n.localize(cls.config.label)}`,
-              callback: html => {
-                const form = html[0].querySelector("form");
-                  try {
-                      mergeObject(createData, FormApplication.processForm(form));   
-                  }catch {
-                      mergeObject(createData, validateForm(form));
-                  }
-                cls.create(createData, {renderSheet: true});
-              }
-            }
-          },
-          default: "create"
-        }).render(true);
-      }
-  
+    // Do not allow the creation event to bubble to other listeners
+    event.preventDefault();
+    event.stopPropagation();
 
+    // Collect data
+    const ent = this.constructor.entity;
+    const cls = this.constructor.cls;
+    const types = game.system.entityTypes[ent];
+
+    // Setup entity data
+    const createData = {
+        name: `New ${game.i18n.localize(cls.config.label)}`,
+        type: types[0],
+        folder: event.currentTarget.dataset.folder
+    };
+
+    // Render the entity creation form
+    let templateData = { upper: ent, lower: ent.toLowerCase(), types: types },
+        dlg = await renderTemplate(`templates/sidebar/entity-create.html`, templateData);
+
+    // Render the confirmation dialog window
+    new Dialog({
+        title: `Create ${createData.name}`,
+        content: dlg,
+        buttons: {
+            create: {
+                icon: '<i class="fas fa-check"></i>',
+                label: `Create ${game.i18n.localize(cls.config.label)}`,
+                callback: html => {
+                    const form = html[0].querySelector("form");
+                    try {
+                        mergeObject(createData, FormApplication.processForm(form));
+                    } catch {
+                        mergeObject(createData, validateForm(form));
+                    }
+                    cls.create(createData, { renderSheet: true });
+                }
+            }
+        },
+        default: "create"
+    }).render(true);
+}
